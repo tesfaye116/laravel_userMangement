@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 
 use App\Http\Controllers\API\RegisterController;
+use App\Http\Controllers\API\ProfileController;
 
 
 /*
@@ -27,9 +28,12 @@ Route::post('login', [RegisterController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
 
     Route::get('user', function (Request $request) {
-        
         return $request->user();
     });
-    
+
     Route::post('logout', [RegisterController::class, 'logout']);
+
+    Route::get('profiles', [ProfileController::class, 'index']);
+
+    Route::post('profiles/create', [ProfileController::class, 'store']);
 });

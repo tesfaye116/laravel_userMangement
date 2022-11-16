@@ -24,23 +24,22 @@ class RegisterController extends BaseController
             'c_password' => 'required|same:password',
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::where('email', $input['email'])->first();
-        if($user){
+        if ($user) {
             return $this->sendError('User already exist.', $validator->errors());
-        }else{
+        } else {
             $user = User::create($input);
             $success['token'] =  $user->createToken('MyApp')->accessToken;
             $success['name'] =  $user->name;
 
             return $this->sendResponse($success, 'User register successfully.');
         }
-
     }
 
     /**
@@ -50,14 +49,13 @@ class RegisterController extends BaseController
      */
     public function login(Request $request)
     {
-        if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
-            $success['token'] =  $user->createToken('MyApp')-> accessToken;
+            $success['token'] =  $user->createToken('MyApp')->accessToken;
 
             return $this->sendResponse($success, 'User login successfully.', 200);
-        }
-        else{
-            return $this->sendError('Unauthorised.', ['error'=>'Unauthorised']);
+        } else {
+            return $this->sendError('Unauthorised.', ['error' => 'Unauthorised']);
         }
     }
     public function logout(Request $request)
@@ -65,5 +63,4 @@ class RegisterController extends BaseController
         $request->user()->token()->revoke();
         return $this->sendResponse([], 'User logout successfully.', 200);
     }
-
 }
